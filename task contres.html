@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+<base href='http://vikku.info/programming/' />
+</head>
+
+<body>
+<script type="text/javascript" src="js/geodata-jsr-class.js"></script>
+<fieldset style="width: 300px ;margin: auto;height: 140px;">
+<div class="contents">
+<br>
+Continent : <select name="continent" id="continent" onchange="getplaces(this.value,'country');">
+<option value=""></option>						
+</select>
+<br><br>
+
+Country : <select name="country" id="country" style="margin-left: 10px;" onchange="getplaces(this.value,'province');">
+<option value=""></option>						
+</select>
+<br><br>
+
+State : <select name="province"style="margin-left: 30px;" id="province" onchange="getplaces(this.value,'region')">
+<option value=""></option>
+</select>
+</fieldset>
+<script type="text/javascript">
+var whos=null;
+function getplaces(gid,src)
+{	
+	whos = src
+	
+	var request = "http://www.geonames.org/childrenJSON?geonameId="+gid+"&callback=listPlaces&style=long";
+	aObj = new JSONscriptRequest(request);
+	aObj.buildScriptTag();
+	aObj.addScriptTag();
+}
+
+function listPlaces(jData)
+{
+	counts = jData.geonames.length<jData.totalResultsCount ? jData.geonames.length : jData.totalResultsCount
+	who = document.getElementById(whos)
+	who.options.length = 0;
+	
+	if(counts)who.options[who.options.length] = new Option('Select','')
+	else who.options[who.options.length] = new Option('No Data Available','NULL')
+			
+	for(var i=0;i<counts;i++)
+		who.options[who.options.length] = new Option(jData.geonames[i].name,jData.geonames[i].geonameId)
+
+	delete jData;
+	jData = null		
+}
+
+window.onload = function() { getplaces(6295630,'continent'); }
+</script>
+
+
+
+</div>
+</body>
+</html>
